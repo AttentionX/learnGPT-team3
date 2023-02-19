@@ -18,7 +18,9 @@ def test_head_v4_attention_has_no_notion_of_space():
     y1 = head(x1)  # (B, T, C)
     y2 = head(x2)  # (B, T, C)
     assert torch.allclose(y1[:, -1, :], y2[:, -1, :])
-
+# 단어의 시퀀스가 변경되어도 결과가 같아지는 이유
+# q = query(wx), k = key(wx)
+# q @ k = query(wx) @ key(wx) = I * query(x) @ key(x)
 
 def test_head_v4_logits_are_properly_masked():
     x = torch.Tensor([[[1, 2, 3],
@@ -33,7 +35,7 @@ def test_head_v4_logits_are_properly_masked():
     # convert the Bool tensor to Int tensor
     was = (head.wei == 0.0).int()
     assert torch.allclose(expected, was)
-
+# 단순 wei가 mask 제대로 되었는지
 
 def test_head_v4_logits_are_properly_normalized():
     B, T, C = 4, 10, 8
@@ -43,7 +45,7 @@ def test_head_v4_logits_are_properly_normalized():
     expected = torch.ones(B, T)
     was = head.wei.sum(dim=-1)
     assert torch.allclose(expected, was)
-
+    # masking 후에 softmax 했으므로 당연히 sum = 1
 
 def test_head_v4_the_variance_of_wei_after_scale_is_1():
     B, T, C = 4, 128, 1024
