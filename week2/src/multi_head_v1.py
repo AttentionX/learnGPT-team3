@@ -23,14 +23,14 @@ class MultiHeadVer1(torch.nn.Module):
             for _ in range(n_heads)
         ])
         self.proj = torch.nn.Linear(embed_size, embed_size)
-
+ 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         :param x: (B, T, C)
         :return: (B, T, C)
         """
         # --- TODO 1-1 --- #
-        raise NotImplementedError
-        out = ...
+        list = [head(x) for head in self.heads]
+        out = self.proj(torch.cat(list, 2))
         # ---------------- #
         return out
